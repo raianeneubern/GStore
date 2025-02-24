@@ -21,4 +21,10 @@ tirar o ?
 
 Criar a camada de dados (Models)
 
+Criar a classe de Contexto na pasta Data
+
+Configurar a ConnectionString no appsettings.json
+
+Adicionar os serviços do Contexto e Identity no Program.cs
+
 
