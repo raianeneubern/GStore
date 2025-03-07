@@ -19,6 +19,9 @@ public class AppDbContext : IdentityDbContext<Usuario>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        AppDbSeed seed = new(builder);
+
         #region Renomear Tabelas do Identity
         builder.Entity<IdentityUser>().ToTable("usuario");
         builder.Entity<IdentityUserRole<string>>().ToTable("usuario_perfil");
@@ -29,7 +32,7 @@ public class AppDbContext : IdentityDbContext<Usuario>
         builder.Entity<IdentityRoleClaim<string>>().ToTable("perfil_regra");
         #endregion
 
-        
+    
 
     }
 }
