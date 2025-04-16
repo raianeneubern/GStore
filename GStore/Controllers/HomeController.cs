@@ -2,13 +2,12 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using GStore.Models;
 using GStore.Data;
-using System.Configuration;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Bcpg.OpenPgp;
+using GStore.ViewModels;
 
 namespace GStore.Controllers;
 
-public class HomeController: Controller
+public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly AppDbContext _db;
@@ -17,7 +16,7 @@ public class HomeController: Controller
     {
         _logger = logger;
         _db = db;
-    } 
+    }
 
     public IActionResult Index()
     {
@@ -26,6 +25,29 @@ public class HomeController: Controller
             .Include(p => p.Fotos)
             .ToList();
         return View(produtos);
+    }
+
+    public IActionResult Produto(int id)
+    {
+        Produto produto = _db.Produtos
+            .Where(p => p.Id == id)
+            .Include(p => p.Categoria)
+            .Include(p => p.Fotos)
+            .SingleOrDefault();
+        
+        List<Produto> semelhantes = _db.Produtos
+            .Where(p => p.Id != id && p.CategoriaId == produto.CategoriaId)
+            .Include(p => p.Categoria)
+            .Include(p => p.Fotos)
+            .Take(4)
+            .ToList();
+        
+        ProdutoVM produtoVM = new() {
+            Produto = produto,
+            Semelhantes = semelhantes
+        };
+        
+        return View(produtoVM);
     }
 
     public IActionResult Privacy()
