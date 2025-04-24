@@ -1,0 +1,22 @@
+@model GStore.ViewModels.RegistroVM
+@{
+    ViewData["Title"] = "Registro";
+    Layout = "~/Views/Shared/_LayoutAccount.cshtml";
+}
+
+<div class="container">
+    <div class="row justify-content-center my-3"
+     <h1 class="display-5 text-center">GStore</h1>
+     <div class="col-lg-8">
+        <div class="card shadow-lg border-0 rounded-lg">
+            <div class="card-header">
+                <h3 class="text-center font-weight-light my-4"> Criação de Conta</h3>
+            </div>
+            <div class="card-body">
+                <form asp-action="Registro" method="post" enctype="multipart/form-data">
+                
+                </form>
+            </div>
+        </div>
+     </div>
+</div>

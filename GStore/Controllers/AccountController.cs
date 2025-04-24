@@ -30,7 +30,7 @@ public class AccountController : Controller
     }
 
     [HttpGet]
-    public IActionResult Login(string returnUrl) 
+    public IActionResult Login(string returnUrl)
     {
         LoginVM login = new()
         {
@@ -38,49 +38,72 @@ public class AccountController : Controller
         };
         return View(login);
     }
-[HttpPost]
-[ValidateAntiForgeryToken]
-public async Task<IActionResult> Login(LoginVM login)
-{
-    if (ModelState.IsValid)
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Login(LoginVM login)
     {
-        string userName = login.Email;
-        if (IsValidEmail(login.Email))
+        if (ModelState.IsValid)
         {
-            var user = await _userManager.FindByEmailAsync(login.Email);
-            if (user != null)
-               userName = user.UserName;
-        }
-        var result = await _signInManager.PasswordSignInAsync(
-            userName, login.Senha, login.Lembrar, lockoutOnFailure: true
-        );
+            string userName = login.Email;
+            if (IsValidEmail(login.Email))
+            {
+                var user = await _userManager.FindByEmailAsync(login.Email);
+                if (user != null)
+                    userName = user.UserName;
+            }
+            var result = await _signInManager.PasswordSignInAsync(
+                userName, login.Senha, login.Lembrar, lockoutOnFailure: true
+            );
 
-        if (result.Succeeded) {
-            _logger.LogInformation($"Usuário {login.Email} acessou o sistema");
-            return LocalRedirect(login.UrlRetorno);
-        }
+            if (result.Succeeded)
+            {
+                _logger.LogInformation($"Usuário {login.Email} acessou o sistema");
+                return LocalRedirect(login.UrlRetorno);
+            }
 
-        if(result.IsLockedOut) {
-            _logger.LogWarning($"Usuário {login.Email} está bloqueado");
-            ModelState.AddModelError("", "Sua conta está bloqueada, aguarde alguns minutos e tente novamente!!");
+            if (result.IsLockedOut)
+            {
+                _logger.LogWarning($"Usuário {login.Email} está bloqueado");
+                ModelState.AddModelError("", "Sua conta está bloqueada, aguarde alguns minutos e tente novamente!!");
+            }
+            else
+            if (result.IsNotAllowed)
+            {
+                _logger.LogWarning($"Usuario {login.Email}  não confirmou sua conta");
+                ModelState.AddModelError(string.Empty, "Sua conta não está confirmada, verifique seu email!!");
+            }
+            else
+                ModelState.AddModelError(string.Empty, "Usuário e/ou Senha Inválidos!!!");
         }
-        else
-        if (result.IsNotAllowed) {
-            _logger.LogWarning()
-        }
+        return View(login);
     }
-}
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Logout()
+    {
+        _logger.LogInformation($"Usuário {ClaimTypes.Email} fez logoff");
+        await _signInManager.SignOutAsync();
+        return RedirectToAction("Index", "Home");
+    }
+    
+    [HttpGet]
+    public IActionResult Registro()
+    {
+        RegistroVM register = new();
+        return View(register);
+    }
+
     public bool IsValidEmail(string email)
     {
-        try 
+        try
         {
             MailAddress m = new(email);
             return true;
         }
         catch (FormatException)
         {
-           return false;
+            return false;
         }
     }
-    
+
 }
