@@ -75,7 +75,7 @@
         });
         if (mensagemErro != '')
             swal.fire(
-                'Acesso Negado',
+                'Problema ao criar Conta',
                 mensagemErro,
                 'error'
             );
@@ -86,6 +86,6 @@
                     img.src = URL.createObjectURL(this.files[0]);
                 }
             });
-        });
+        };
     </script>
 }
