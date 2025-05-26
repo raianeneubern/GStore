@@ -30,4 +30,12 @@ Configurar a ConnectionString no appsettings.json
 
 Adicionar os serviços do Contexto e Identity no Program.cs
 
+dotnewt codegerenetor
+
+dotnet tool install -g  dotnet-aspnet-codegenerator
+
+
+dotnet aspnet-codegenerator controller -name CategoriasController --model Categoria --dataContext AppDbContext --layout "~/Views/Shared/_LayoutAdmin.cshtml" -outDir Controllers
+
+dotnet aspnet-codegenerator controller -name CategoriasController --model Produto --dataContext AppDbContext --layout "~/Views/Shared/_LayoutAdmin.cshtml" -outDir Controllers
 
